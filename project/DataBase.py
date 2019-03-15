@@ -16,6 +16,7 @@ class DB:
 class NewsModel:
     def __init__(self, connection):
         self.connection = connection
+        self.init_table()
 
     def init_table(self):
         cursor = self.connection.cursor()
@@ -23,7 +24,7 @@ class NewsModel:
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                              title VARCHAR(50),
                              content VARCHAR(1000),
-                             user_id INTEGER
+                             user_id INT(50)
                              )''')
         cursor.close()
         self.connection.commit()
@@ -38,7 +39,7 @@ class NewsModel:
 
     def get(self, news_id):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM news WHERE id = ?", (str(news_id),))
+        cursor.execute("SELECT * FROM news WHERE id = {}".format(str(news_id),)) #!!!!!!
         row = cursor.fetchone()
         return row
 
@@ -59,9 +60,10 @@ class NewsModel:
         self.connection.commit()
 
 
-class UsersModel:
+class UserModel:
     def __init__(self, connection):
         self.connection = connection
+        self.init_table()
 
     def init_table(self):
         cursor = self.connection.cursor()
