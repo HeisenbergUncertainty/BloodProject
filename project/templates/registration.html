@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h1 class="text-center">Авторизация</h1>
+<h1 class="text-center">Регистрация</h1>
 <form action="" method="post" novalidate class="text-center">
     {{ form.hidden_tag() }}
     <p>
@@ -23,8 +22,11 @@
     </div>
     {% endfor %}
     </p>
+    <!---->
+    <!--<p>{{ form.admin() }} {{ form.admin }}</p>-->
+    <!---->
     <p>{{ form.submit() }}</p>
-    <a class="btn btn-outline-secondary" href="/registration">Регистрация</a>
+    <a class="btn btn-outline-secondary" href="/login">Авторизация</a>
 
 
 </form>
