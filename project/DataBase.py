@@ -23,9 +23,9 @@ class UserModel:
         cursor.execute('''CREATE TABLE IF NOT EXISTS users 
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                              user_name VARCHAR(50),
-                             password_hash VARCHAR(128),
-                             admin CHAR(1), 
-                             isopen CHAR(1))''')  # &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+                             password_hash VARCHAR(128), 
+                             isopen CHAR(1)),
+                             admin CHAR(1)''')  # &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         # cursor.execute('''DROP TABLE users''')
         cursor.close()
         self.connection.commit()
@@ -33,8 +33,8 @@ class UserModel:
     def insert(self, user_name, password_hash):
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO users 
-                          (user_name, password_hash) 
-                          VALUES (?,?)''',
+                          (user_name, password_hash, isopen, admin) 
+                          VALUES (?,?, '0', '0')''',
                        (str(user_name), str(password_hash),))
         cursor.close()
         self.connection.commit()
@@ -51,10 +51,18 @@ class UserModel:
         rows = cursor.fetchall()
         return rows
 
+    def switch(self, who, how, id):
+        cursor = self.connection.cursor()
+        cursor.execute("UPDATE users SET ? = ? WHERE id = ?", (who, how, id,))
+        rows = cursor.fetchall()
+
     def exists(self, user_name, password_hash):
         cursor = self.connection.cursor()
+        # cursor.execute("SELECT * FROM users WHERE user_name = {}".format(str(user_name)))
+
         cursor.execute(
-            "SELECT * FROM users WHERE user_name = ?", (str(user_name))) #Убрана проверка повторности пароля, проверить работоспособность
+            "SELECT * FROM users WHERE user_name = ?",
+            (str(user_name),))
         row = cursor.fetchone()
         return (True, row[0]) if row else (False,)
 

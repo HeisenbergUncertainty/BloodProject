@@ -17,11 +17,6 @@ class RegistrationForm(FlaskForm):
     # admin = BooleanField('Запомнить меня')
 
 
-class SelfForm(FlaskForm):
-    # picture = ???Field('Аватарка', validators=[DataRequired()])
-    isopen = BooleanField('Открытый аккаунт')
-
-
 class AddNewsForm(FlaskForm):
     title = StringField('Заголовок новости', validators=[DataRequired()])
     content = TextAreaField('Текст новости', validators=[DataRequired()])

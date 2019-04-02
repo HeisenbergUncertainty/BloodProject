@@ -79,7 +79,6 @@ def self(user_id):
         return redirect('/login')
 
     form = SelfForm()
-    isopen = form.isopen #&&&&&&&&&&&&&&&&&&&
 
     # news = NewsModel(db.get_connection()).get_all(session['user_id'])
     return render_template('self.html', user_name=session['user_name'],
@@ -115,6 +114,14 @@ def add_news():
                            user_id=session['user_id'])
 
 
+@app.route('/search', methods=['GET'])
+def search():
+    if 'user_name' not in session:
+        return redirect('/login')
+    new = NewsModel(db.get_connection())
+    return redirect("/search")
+
+
 @app.route('/delete_news/<int:news_id>', methods=['GET'])
 def delete_news(news_id):
     if 'user_name' not in session:
@@ -122,6 +129,21 @@ def delete_news(news_id):
     new = NewsModel(db.get_connection())
     new.delete(news_id)
     return redirect("/news")
+
+
+@app.route('/switch')
+def switch():
+    if 'user_name' not in session:
+        return redirect('/login')
+
+    sw = UserModel(db.get_connection())
+    flag = sw.get(session['user_id'])[3]
+    print(flag)
+    who = session['user_id']
+    if flag == '0':
+
+    # sw.switch(who, how, id)
+    return redirect("/{}".format(id))
 
 
 @app.route('/logout')
@@ -133,3 +155,4 @@ def logout():
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
+
