@@ -1,6 +1,6 @@
-from flask import Flask, redirect, render_template, session, request
+from flask import Flask, redirect, render_template, session, request, url_for
 from flask_bootstrap import Bootstrap
-from forms import LoginForm, RegistrationForm, AddNewsForm
+from forms import LoginForm, RegistrationForm, SelfForm, AddNewsForm
 from DataBase import DB, NewsModel, UserModel
 
 app = Flask(__name__)
@@ -73,14 +73,28 @@ def registration():
                 return redirect("/news")
 
 
+@app.route('/<int:user_id>', methods=['GET', 'POST'])
+def self(user_id):
+    if 'user_name' not in session:
+        return redirect('/login')
+
+    form = SelfForm()
+    isopen = form.isopen #&&&&&&&&&&&&&&&&&&&
+
+    # news = NewsModel(db.get_connection()).get_all(session['user_id'])
+    return render_template('self.html', user_name=session['user_name'],
+                           user_id=session['user_id'], form=form,
+                           avatar=url_for('static',
+                                          filename='img/zero_avatar.jpg'))
+
+
 @app.route('/news', methods=['GET'])
 def news():
     if 'user_name' not in session:
         return redirect('/login')
-
     news = NewsModel(db.get_connection()).get_all(session['user_id'])
     return render_template('news.html', user_name=session['user_name'],
-                           news=news)
+                           user_id=session['user_id'], news=news)
 
 
 @app.route('/add_news', methods=['GET', 'POST'])
@@ -97,7 +111,8 @@ def add_news():
         return redirect("/news")
 
     return render_template('add_news.html', title='Добавление новости',
-                           form=form, user_name=session['user_name'])
+                           form=form, user_name=session['user_name'],
+                           user_id=session['user_id'])
 
 
 @app.route('/delete_news/<int:news_id>', methods=['GET'])

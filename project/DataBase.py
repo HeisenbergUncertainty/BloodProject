@@ -24,8 +24,8 @@ class UserModel:
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                              user_name VARCHAR(50),
                              password_hash VARCHAR(128),
-                             admin BOOL
-                             )''')
+                             admin CHAR(1), 
+                             isopen CHAR(1))''')  # &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         # cursor.execute('''DROP TABLE users''')
         cursor.close()
         self.connection.commit()
@@ -54,8 +54,7 @@ class UserModel:
     def exists(self, user_name, password_hash):
         cursor = self.connection.cursor()
         cursor.execute(
-            "SELECT * FROM users WHERE user_name = ? AND password_hash = ?",
-            (str(user_name), str(password_hash),))
+            "SELECT * FROM users WHERE user_name = ?", (str(user_name))) #Убрана проверка повторности пароля, проверить работоспособность
         row = cursor.fetchone()
         return (True, row[0]) if row else (False,)
 
@@ -108,4 +107,3 @@ class NewsModel:
         cursor.execute("DELETE FROM news WHERE id = {}".format(str(news_id)))
         cursor.close()
         self.connection.commit()
-
